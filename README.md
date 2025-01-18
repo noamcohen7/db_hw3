@@ -39,3 +39,4 @@ FROM genre as g
 JOIN films as f on g.id = f.genre_id;
 GROUP BY f.director_name
 HAVING genre_count >= 3;
+
