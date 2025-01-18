@@ -1,10 +1,6 @@
 import mysql.connector
 
-def create_database():
-    """
-    Creates the db tables that
-    :return:
-    """
+def create_tables():
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port="3305",
@@ -13,18 +9,29 @@ def create_database():
         database="noamcohen7"
     )
     cursor = connection.cursor()
-    cursor.execute("CREATE DATABASE IF NOT EXISTS movie_db")
-    cursor.close()
-    connection.close()
 
-def create_tables():
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="your_username",
-        password="your_password",
-        database="movie_db"
-    )
-    cursor = connection.cursor()
+    # Create Genres Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS genres (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        genre_name VARCHAR(100) UNIQUE NOT NULL
+    )""")
+
+    # Create Directors Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS directors (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        director_name VARCHAR(255) NOT NULL
+    )""")
+
+    # Create Actors Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS actors (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        actor_name VARCHAR(255) NOT NULL,
+        biography TEXT,
+        FULLTEXT(biography)
+    )""")
 
     # Create Movies Table
     cursor.execute("""
@@ -41,28 +48,17 @@ def create_tables():
         INDEX (director_id)
     )""")
 
-    # Create Actors Table
+    # Create Customers Table
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS actors (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        actor_name VARCHAR(255) NOT NULL,
-        biography TEXT,
-        FULLTEXT(biography)
-    )""")
+        CREATE TABLE IF NOT EXISTS customers (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            country VARCHAR(100) NOT NULL,
+            INDEX (country)
+        )""")
 
-    # Create Genres Table
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS genres (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        genre_name VARCHAR(100) UNIQUE NOT NULL
-    )""")
 
-    # Create Directors Table
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS directors (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        director_name VARCHAR(255) NOT NULL
-    )""")
 
     # Create Rentals Table
     cursor.execute("""
@@ -76,16 +72,6 @@ def create_tables():
         INDEX (customer_id),
         INDEX (movie_id),
         INDEX (rental_date)
-    )""")
-
-    # Create Customers Table
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS customers (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        country VARCHAR(100) NOT NULL,
-        INDEX (country)
     )""")
 
     # Create Film_Actor Table
@@ -106,5 +92,5 @@ def create_tables():
     connection.close()
 
 if __name__ == "__main__":
-    create_database()
+
     create_tables()
