@@ -59,7 +59,6 @@ def create_tables():
         )""")
 
 
-
     # Create Rentals Table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS rentals (
@@ -86,6 +85,29 @@ def create_tables():
         INDEX (movie_id),
         INDEX (actor_id)
     )""")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def delete_tables():
+    connection = mysql.connector.connect(
+        host="127.0.0.1",
+        port="3305",
+        user="noamcohen7",
+        password="noam77041",
+        database="noamcohen7"
+    )
+    cursor = connection.cursor()
+
+    # Drop tables in reverse order to avoid foreign key conflicts
+    cursor.execute("DROP TABLE IF EXISTS film_actor")
+    cursor.execute("DROP TABLE IF EXISTS rentals")
+    cursor.execute("DROP TABLE IF EXISTS customers")
+    cursor.execute("DROP TABLE IF EXISTS movies")
+    cursor.execute("DROP TABLE IF EXISTS actors")
+    cursor.execute("DROP TABLE IF EXISTS genres")
+    cursor.execute("DROP TABLE IF EXISTS directors")
 
     connection.commit()
     cursor.close()
