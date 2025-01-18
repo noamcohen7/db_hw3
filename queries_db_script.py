@@ -66,4 +66,9 @@ def query_5():
     )""")
 
 
-
+def main():
+    query_1()
+    query_2()
+    query_3()
+    query_4()
+    query_5()
