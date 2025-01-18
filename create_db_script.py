@@ -116,3 +116,4 @@ def delete_tables():
 if __name__ == "__main__":
 
     create_tables()
+    # delete_tables() use - this function only if you want to check the creation of db from scratch
