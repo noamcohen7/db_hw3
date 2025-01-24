@@ -11,17 +11,18 @@ connection = mysql.connector.connect(
 cursor = connection.cursor()
 
 
-
-# Create query
 def query_1():
+    """ Executes query number 1 """
     cursor.execute("""
         select(movies).where(func.match(movies.c.title, movies.c.description).against('action hero'))""")
 
 def query_2():
+    """ Executes query number 2 """
     cursor.execute("""select(actors).where(func.match(actors.c.biography).against('Oscar winner'))""")
 
 
 def query_3():
+    """ Executes query number 3 """
     cursor.execute("""
      select(customers.c.country, genres.c.genre, func.count(1).label('genre_count'))
     .join(rentals, customers.c.customer_id == rentals.c.customer_id)
@@ -44,6 +45,7 @@ def query_3():
     )""")
 
 def query_4():
+    """ Executes query number 4 """
     cursor.execute("""
         select(
             actors.c.actor_name.label('actor1'),
@@ -59,16 +61,9 @@ def query_4():
 
 
 def query_5():
+    """ Executes query number 5 """
     cursor.execute("""select(films.c.director_name, func.count(distinct(genres.c.genre)).label('genre_count'))
     .join(genres, genres.c.id == films.c.genre_id)
     .group_by(films.c.director_name)
     .having(func.count(distinct(genres.c.genre)) >= 3)
     )""")
-
-
-def main():
-    query_1()
-    query_2()
-    query_3()
-    query_4()
-    query_5()
