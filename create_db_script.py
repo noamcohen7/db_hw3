@@ -1,6 +1,10 @@
 import mysql.connector
 
 def create_tables():
+    """
+    Creates the tables scheme
+    If table exists than table will not be recreated
+    """
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port="3305",
@@ -91,6 +95,11 @@ def create_tables():
     connection.close()
 
 def delete_tables():
+    """
+    Responsible for deleting the tables
+    To be used only for work progress
+    :return:
+    """
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port="3305",
