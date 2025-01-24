@@ -24,6 +24,17 @@ def insert_genres(cursor, genres):
         except mysql.connector.Error as err:
             print(f"Error inserting genre {genre}: {err}")
 
+def update_genre(cursor, genre_id, new_genre_name):
+    """
+    Update a genre in the database.
+    """
+    try:
+        cursor.execute("""
+            UPDATE genres SET genre_name = %s WHERE id = %s
+        """, (new_genre_name, genre_id))
+    except mysql.connector.Error as err:
+        print(f"Error updating genre ID {genre_id}: {err}")
+
 def insert_directors(cursor, directors):
     """
     Insert directors into the database.
@@ -36,6 +47,17 @@ def insert_directors(cursor, directors):
         except mysql.connector.Error as err:
             print(f"Error inserting director {director}: {err}")
 
+def update_director(cursor, director_id, new_director_name):
+    """
+    Update a director in the database.
+    """
+    try:
+        cursor.execute("""
+            UPDATE directors SET director_name = %s WHERE id = %s
+        """, (new_director_name, director_id))
+    except mysql.connector.Error as err:
+        print(f"Error updating director ID {director_id}: {err}")
+
 def insert_actors(cursor, actors):
     """
     Insert actors into the database.
@@ -47,6 +69,17 @@ def insert_actors(cursor, actors):
             """, (actor['name'], actor['biography']))
         except mysql.connector.Error as err:
             print(f"Error inserting actor {actor['name']}: {err}")
+
+def update_actor(cursor, actor_id, new_name, new_biography):
+    """
+    Update an actor in the database.
+    """
+    try:
+        cursor.execute("""
+            UPDATE actors SET actor_name = %s, biography = %s WHERE id = %s
+        """, (new_name, new_biography, actor_id))
+    except mysql.connector.Error as err:
+        print(f"Error updating actor ID {actor_id}: {err}")
 
 def insert_movies(cursor, movies):
     """
@@ -63,6 +96,17 @@ def insert_movies(cursor, movies):
         except mysql.connector.Error as err:
             print(f"Error inserting movie {movie['title']}: {err}")
 
+def update_movie(cursor, movie_id, new_title, new_description):
+    """
+    Update a movie in the database.
+    """
+    try:
+        cursor.execute("""
+            UPDATE movies SET title = %s, description = %s WHERE id = %s
+        """, (new_title, new_description, movie_id))
+    except mysql.connector.Error as err:
+        print(f"Error updating movie ID {movie_id}: {err}")
+
 def insert_customers(cursor, customers):
     """
     Insert customers into the database.
@@ -75,6 +119,17 @@ def insert_customers(cursor, customers):
             """, (customer['name'], customer['email'], customer['country']))
         except mysql.connector.Error as err:
             print(f"Error inserting customer {customer['name']}: {err}")
+
+def update_customer(cursor, customer_id, new_name, new_email, new_country):
+    """
+    Update a customer in the database.
+    """
+    try:
+        cursor.execute("""
+            UPDATE customers SET name = %s, email = %s, country = %s WHERE id = %s
+        """, (new_name, new_email, new_country, customer_id))
+    except mysql.connector.Error as err:
+        print(f"Error updating customer ID {customer_id}: {err}")
 
 def insert_rentals(cursor, rentals):
     """
@@ -163,5 +218,32 @@ def populate_database():
     cursor.close()
     connection.close()
 
+def example_usage():
+    """
+    Example usage of update functions.
+    """
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    # Example: Update a genre
+    update_genre(cursor, genre_id=1, new_genre_name="Adventure")
+
+    # Example: Update a director
+    update_director(cursor, director_id=1, new_director_name="Christopher Edward Nolan")
+
+    # Example: Update an actor
+    update_actor(cursor, actor_id=1, new_name="Leonardo Wilhelm DiCaprio", new_biography="Oscar-winning actor known for Titanic and The Revenant.")
+
+    # Example: Update a movie
+    update_movie(cursor, movie_id=1, new_title="Inception (Extended Edition)", new_description="A mind-bending thriller with extended scenes.")
+
+    # Example: Update a customer
+    update_customer(cursor, customer_id=1, new_name="Johnathan Doe", new_email="johnathan.doe@example.com", new_country="United States")
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 if __name__ == "__main__":
     populate_database()
+    example_usage()
