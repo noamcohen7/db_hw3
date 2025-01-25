@@ -90,8 +90,8 @@ def insert_movies(cursor, movies):
             cursor.execute("""
                 INSERT INTO movies (title, description, genre_id, director_id)
                 VALUES (%s, %s,
-                        (SELECT id FROM genres WHERE genre_name = %s),
-                        (SELECT id FROM directors WHERE director_name = %s))
+                        (SELECT id FROM genres WHERE genre_name = %s LIMIT 1),
+                        (SELECT id FROM directors WHERE director_name = %s LIMIT 1))
             """, (movie['title'], movie['description'], movie['genre'], movie['director']))
         except mysql.connector.Error as err:
             print(f"Error inserting movie {movie['title']}: {err}")
@@ -157,8 +157,8 @@ def insert_film_actor(cursor, film_actors):
             cursor.execute("""
                 INSERT IGNORE INTO film_actor (movie_id, actor_id)
                 VALUES (
-                    (SELECT id FROM movies WHERE title = %s),
-                    (SELECT id FROM actors WHERE actor_name = %s)
+                    (SELECT id FROM movies WHERE title = %s LIMIT 1),
+                    (SELECT id FROM actors WHERE actor_name = %s LIMIT 1)
                 )
             """, (film_actor['movie_title'], film_actor['actor_name']))
         except mysql.connector.Error as err:
