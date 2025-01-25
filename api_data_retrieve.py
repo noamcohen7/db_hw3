@@ -107,46 +107,6 @@ def update_movie(cursor, movie_id, new_title, new_description):
     except mysql.connector.Error as err:
         print(f"Error updating movie ID {movie_id}: {err}")
 
-def insert_customers(cursor, customers):
-    """
-    Insert customers into the database.
-    """
-    for customer in customers:
-        try:
-            cursor.execute("""
-                INSERT IGNORE INTO customers (name, email, country)
-                VALUES (%s, %s, %s)
-            """, (customer['name'], customer['email'], customer['country']))
-        except mysql.connector.Error as err:
-            print(f"Error inserting customer {customer['name']}: {err}")
-
-def update_customer(cursor, customer_id, new_name, new_email, new_country):
-    """
-    Update a customer in the database.
-    """
-    try:
-        cursor.execute("""
-            UPDATE customers SET name = %s, email = %s, country = %s WHERE id = %s
-        """, (new_name, new_email, new_country, customer_id))
-    except mysql.connector.Error as err:
-        print(f"Error updating customer ID {customer_id}: {err}")
-
-def insert_rentals(cursor, rentals):
-    """
-    Insert rentals into the database.
-    """
-    for rental in rentals:
-        try:
-            cursor.execute("""
-                INSERT INTO rentals (customer_id, movie_id, rental_date)
-                VALUES (
-                    (SELECT id FROM customers WHERE email = %s),
-                    (SELECT id FROM movies WHERE title = %s),
-                    %s
-                )
-            """, (rental['customer_email'], rental['movie_title'], rental['rental_date']))
-        except mysql.connector.Error as err:
-            print(f"Error inserting rental for customer {rental['customer_email']}: {err}")
 
 def insert_film_actor(cursor, film_actors):
     """
@@ -163,6 +123,23 @@ def insert_film_actor(cursor, film_actors):
             """, (film_actor['movie_title'], film_actor['actor_name']))
         except mysql.connector.Error as err:
             print(f"Error inserting film_actor for movie {film_actor['movie_title']}: {err}")
+
+
+def update_film_actor(cursor, old_movie_title, old_actor_name, new_movie_title, new_actor_name):
+    """
+    Update film-actor relationships when movies or actors are updated.
+    """
+    try:
+        cursor.execute("""
+            UPDATE film_actor
+            SET movie_id = (SELECT id FROM movies WHERE title = %s LIMIT 1),
+                actor_id = (SELECT id FROM actors WHERE actor_name = %s LIMIT 1)
+            WHERE movie_id = (SELECT id FROM movies WHERE title = %s LIMIT 1)
+              AND actor_id = (SELECT id FROM actors WHERE actor_name = %s LIMIT 1)
+        """, (new_movie_title, new_actor_name, old_movie_title, old_actor_name))
+    except mysql.connector.Error as err:
+        print(f"Error updating film_actor for movie {old_movie_title} and actor {old_actor_name}: {err}")
+
 
 def populate_database():
     """
