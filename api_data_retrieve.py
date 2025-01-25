@@ -218,7 +218,7 @@ def populate_database():
     cursor.close()
     connection.close()
 
-def example_usage():
+def update_the_db_tables():
     """
     Example usage of update functions.
     """
@@ -246,4 +246,4 @@ def example_usage():
 
 if __name__ == "__main__":
     populate_database()
-    example_usage()
+    update_the_db_tables()
