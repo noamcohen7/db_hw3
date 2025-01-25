@@ -7,23 +7,19 @@ Designed to have the following 5 queries executed and adjusted to it:
 2. SELECT * FROM actors 
    WHERE MATCH(biography) AGAINST('Oscar winner');
 
-3. SELECT c.country, g.genre, COUNT(*) AS genre_count
-FROM Customers c
-JOIN Rentals r ON c.customer_id = r.customer_id
-JOIN Films f ON r.film_id = f.film_id
-JOIN Genres g ON f.genre_id = g.genre_id
-GROUP BY c.country, g.genre
+3. SELECT g.genre_name, COUNT(*) AS movie_count
+FROM genres g
+JOIN movies m ON g.id = m.genre_id
+GROUP BY g.genre_name
 HAVING COUNT(*) = (
-    SELECT MAX(genre_count)
+    SELECT MAX(movie_count)
     FROM (
-        SELECT c.country, g.genre, COUNT(*) AS genre_count
-        FROM Customers c
-        JOIN Rentals r ON c.customer_id = r.customer_id
-        JOIN Films f ON r.film_id = f.film_id
-        JOIN Genres g ON f.genre_id = g.genre_id
-        GROUP BY c.country, g.genre
+        SELECT g.genre_name, COUNT(*) AS movie_count
+        FROM genres g
+        JOIN movies m ON g.id = m.genre_id
+        GROUP BY g.genre_name
     ) AS genre_counts
-    WHERE genre_counts.country =  c.country;
+);
 
 4. SELECT a1.actor_name AS actor1, a2.actor_name AS actor2, COUNT(*) AS movie_count
 FROM film_actor  AS fa1

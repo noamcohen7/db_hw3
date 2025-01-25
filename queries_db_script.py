@@ -23,25 +23,19 @@ def query_2():
 
 def query_3():
     """ Executes query number 3 """
-    cursor.execute("""
-     select(customers.c.country, genres.c.genre, func.count(1).label('genre_count'))
-    .join(rentals, customers.c.customer_id == rentals.c.customer_id)
-    .join(films, rentals.c.film_id == films.c.film_id)
-    .join(genres, films.c.genre_id == genres.c.genre_id)
-    .group_by(customers.c.country, genres.c.genre)
-    .having(
-        func.count(1) == (
-            select(func.max(genre_count))
-            .from_(
-                select(customers.c.country, genres.c.genre, func.count(1).label('genre_count'))
-                .join(rentals, customers.c.customer_id == rentals.c.customer_id)
-                .join(films, rentals.c.film_id == films.c.film_id)
-                .join(genres, films.c.genre_id == genres.c.genre_id)
-                .group_by(customers.c.country, genres.c.genre)
-            ).alias('genre_counts')
-            .where(genre_counts.c.country == customers.c.country)
-            )
-        )
+    cursor.execute(""" 
+    SELECT g.genre_name, COUNT(*) AS movie_count
+    FROM genres g
+    JOIN movies m ON g.id = m.genre_id
+    GROUP BY g.genre_name
+    HAVING COUNT(*) = (
+        SELECT MAX(movie_count)
+        FROM (
+            SELECT g.genre_name, COUNT(*) AS movie_count
+            FROM genres g
+            JOIN movies m ON g.id = m.genre_id
+            GROUP BY g.genre_name
+        ) AS genre_counts
     )""")
 
 def query_4():
