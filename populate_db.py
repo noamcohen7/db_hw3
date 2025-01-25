@@ -1,3 +1,4 @@
+import time
 import requests
 from api_data_retrieve import connect_to_database, insert_genres, insert_directors, insert_actors, insert_movies, insert_film_actor
 
@@ -13,6 +14,16 @@ def fetch_genres_from_tmdb():
     response.raise_for_status()
     genres = response.json().get("genres", [])
     return genres  # List of genre dictionaries
+
+def fetch_actor_biography(actor_id):
+    """
+    Fetch biography for a specific actor using TMDB API.
+    """
+    url = f"{TMDB_BASE_URL}/person/{actor_id}"
+    response = requests.get(url, params={"api_key": TMDB_API_KEY, "language": "en-US"})
+    response.raise_for_status()
+    actor_data = response.json()
+    return actor_data.get("biography", "Biography unavailable")
 
 def fetch_popular_movies_from_tmdb(pages=5000):
     """
@@ -52,7 +63,7 @@ def populate_database_from_tmdb():
     insert_genres(cursor, [genre["name"] for genre in genres])
 
     # Fetch and insert movies and related data
-    movies = fetch_popular_movies_from_tmdb(pages=500)  # Adjusted for 500 pages
+    movies = fetch_popular_movies_from_tmdb(pages=100)  # Adjusted for 100 pages
     for movie in movies:
         # Map genre IDs to genre names
         movie_genres = [genre["name"] for genre in genres if genre["id"] in movie["genre_ids"]]
@@ -77,7 +88,8 @@ def populate_database_from_tmdb():
 
         # Insert actors and film-actor relationships
         for actor in actors:
-            insert_actors(cursor, [{"name": actor["name"], "biography": "Biography unavailable"}])
+            actor_biography = fetch_actor_biography(actor["id"])
+            insert_actors(cursor, [{"name": actor["name"], "biography": actor_biography}])
             insert_film_actor(cursor, [{"movie_title": movie["title"], "actor_name": actor["name"]}])
 
     connection.commit()
