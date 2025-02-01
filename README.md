@@ -5,9 +5,10 @@ The following queries are executed against a DB designed to have the queries exe
     FROM movies
     WHERE MATCH(title, description) AGAINST('"action hero"' IN BOOLEAN MODE)
 
-2.  SELECT *
+2.  SELECT DISTINCT actor_name, biography
     FROM actors
     WHERE MATCH(biography) AGAINST('"Oscar winner"' IN BOOLEAN MODE)
+    AND biography LIKE '%Oscar winner%';
 
 3.  SELECT g.genre_name, COUNT(*) AS movie_count
     FROM genres g

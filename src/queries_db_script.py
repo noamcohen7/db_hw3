@@ -13,7 +13,7 @@ cursor = connection.cursor()
 
 def query_1():
     """
-    Search movies using a full-text search on title and description.
+    Search movies using a full-text search on title and description and presents all its data.
     """
     try:
         cursor.execute("""
@@ -29,13 +29,14 @@ def query_1():
 
 def query_2():
     """
-    Find actors with 'Oscar winner' in their biography.
+    Find actors with 'Oscar winner' in their biography and presents their name and biography.
     """
     try:
         cursor.execute("""
-            SELECT *
+            SELECT DISTINCT actor_name, biography
             FROM actors
             WHERE MATCH(biography) AGAINST('"Oscar winner"' IN BOOLEAN MODE)
+            AND biography LIKE '%Oscar winner%';
         """)
         results = cursor.fetchall()
         return results
