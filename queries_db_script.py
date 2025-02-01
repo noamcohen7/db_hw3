@@ -29,7 +29,7 @@ def query_1():
 
 def query_2():
     """
-    Executes query number 2: Find actors with 'Oscar winner' in their biography.
+    Find actors with 'Oscar winner' in their biography.
     """
     try:
         cursor.execute("""
@@ -45,7 +45,7 @@ def query_2():
 
 
 def query_3():
-    """ Executes query number 3 """
+    """ Finds the genre(s) with the highest number of movies in the database. """
     try:
         cursor.execute(""" 
         SELECT g.genre_name, COUNT(*) AS movie_count
@@ -68,10 +68,9 @@ def query_3():
         return []
 
 def query_4():
-    """ Executes query number 4 """
     """
-        Executes query: Find actor pairs who have acted in more than one movie together.
-        """
+    Find actor pairs who have acted in more than one movie together.
+    """
     try:
         cursor.execute("""
                 SELECT 
@@ -94,7 +93,7 @@ def query_4():
 
 def query_5():
     """
-    Executes query number 5: Find directors who directed movies in at least 3 different genres.
+    Find directors who directed movies in at least 3 different genres.
     """
     try:
         cursor.execute("""
