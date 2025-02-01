@@ -87,7 +87,7 @@ def query_4():
         results = cursor.fetchall()
         return results
     except mysql.connector.Error as err:
-        print(f"Error executing query_shared_movies: {err}")
+        print(f"Error executing query 4: {err}")
         return []
 
 
