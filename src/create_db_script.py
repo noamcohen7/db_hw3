@@ -1,6 +1,10 @@
 import mysql.connector
 
 def create_tables():
+    """
+    Creates the tables scheme
+    If table exists than table will not be recreated
+    """
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port="3305",
@@ -48,31 +52,6 @@ def create_tables():
         INDEX (director_id)
     )""")
 
-    # Create Customers Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS customers (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            country VARCHAR(100) NOT NULL,
-            INDEX (country)
-        )""")
-
-
-    # Create Rentals Table
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS rentals (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        customer_id INT NOT NULL,
-        movie_id INT NOT NULL,
-        rental_date DATE NOT NULL,
-        FOREIGN KEY (customer_id) REFERENCES customers(id),
-        FOREIGN KEY (movie_id) REFERENCES movies(id),
-        INDEX (customer_id),
-        INDEX (movie_id),
-        INDEX (rental_date)
-    )""")
-
     # Create Film_Actor Table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS film_actor (
@@ -91,6 +70,11 @@ def create_tables():
     connection.close()
 
 def delete_tables():
+    """
+    Responsible for deleting the tables
+    To be used only for work progress
+    :return:
+    """
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port="3305",
@@ -102,8 +86,6 @@ def delete_tables():
 
     # Drop tables in reverse order to avoid foreign key conflicts
     cursor.execute("DROP TABLE IF EXISTS film_actor")
-    cursor.execute("DROP TABLE IF EXISTS rentals")
-    cursor.execute("DROP TABLE IF EXISTS customers")
     cursor.execute("DROP TABLE IF EXISTS movies")
     cursor.execute("DROP TABLE IF EXISTS actors")
     cursor.execute("DROP TABLE IF EXISTS genres")
@@ -116,4 +98,4 @@ def delete_tables():
 if __name__ == "__main__":
 
     create_tables()
-    # delete_tables() use - this function only if you want to check the creation of db from scratch
+    #delete_tables() #use - this function only if you want to check the creation of db from scratch
